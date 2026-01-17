@@ -1,0 +1,4 @@
+id,status,amount
+4,ERROR,
+5,BAD,300
+,OK,400
