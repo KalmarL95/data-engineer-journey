@@ -36,3 +36,11 @@ print("Total rows:", total)
 print("Valid rows:", valid)
 print("Invalid rows:", invalid)
 
+with open("output/metrics.txt", "w") as metrics:
+    metrics.write(f"total={total}\n")
+    metrics.write(f"valid={valid}\n")
+    metrics.write(f"invalid={invalid}\n")
+
+if invalid > 0:
+    sys.exit(2)
+
