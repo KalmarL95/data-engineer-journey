@@ -43,6 +43,8 @@ def main() -> int:
     valid = 0
     invalid = 0
 
+    reason_counts = {}
+
     setup_logger()
     logging.info("Starting ETL. input_file=%s", input_file)
 
@@ -62,11 +64,19 @@ def main() -> int:
                 if not is_valid:
                     invalid_writer.writerow(row)
                     invalid += 1
+                    reason_counts[reason] = reason_counts.get(reason, 0) + 1
                     logging.warning("Invalid row (%s): %s", reason, row)
                     continue
 
                 valid_writer.writerow(row)
                 valid += 1
+
+    with open("output/reasons.txt", "w") as f:
+        if not reason_counts:
+            f.write("no_invalid_rows=1\n")
+        else:
+            for reason, count in sorted(reason_counts.items(), key=lambda x: x[1], reverse=True):
+                f.write(f"{reason}={count}\n")
 
     write_metrics(total, valid, invalid)
 
@@ -75,7 +85,6 @@ def main() -> int:
     if invalid > 0:
         return 2
     return 0
-
 
 
 if __name__ == "__main__":
